@@ -77,8 +77,14 @@ rea inspect "C:\fixtures\sample.exe" --provider ghidra --format json
 
 `rea doctor` distinguishes installation prerequisites from native artifact or
 OS failures. It checks the Ghidra release, headless launcher, full JDK, x64
-host, and native controls. A missing or mismatched addon requires the matching
-Windows x64 package; changing MCP registration cannot supply that artifact.
+host, and native controls. A missing or mismatched addon requires matching
+Windows x64 native control files. For an installed/published package, use the
+matching Windows x64 `rea-agents` package. For a source checkout, restore
+`native/windows/build/manifest.json` and
+`native/windows/build/rea-windows-x64.node` from the npm tarball for the same
+`rea-agents` version as the checkout's `package.json`, or build them following
+[Restore the artifact in a source checkout](https://github.com/morluto/rea/blob/main/native/windows/README.md#restore-the-artifact-in-a-source-checkout);
+changing MCP registration cannot supply that artifact.
 A filesystem or access failure identifies the failed native constraint.
 An incompatible host uses `unsupported_host`. Missing, mismatched or unloadable
 native artifacts use `runtime_missing` and doctor classification

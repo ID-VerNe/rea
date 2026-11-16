@@ -28,12 +28,18 @@ without this lane reports Windows native controls as unavailable.
 
 ## Restore the artifact in a source checkout
 
-The source tree omits `native/windows/build/` from Git. To run Windows
-provider-backed workflows from a checkout without the MinGW build lane, extract
-the two files from the published `rea-agents` tarball whose version exactly
-matches the checkout's `package.json` version. Do not use `latest` or copy files
-from another REA version; the loader verifies the manifest version, ABI,
-architecture, and addon digest before it grants authority.
+The source tree omits `native/windows/build/` from Git. If you build or run REA
+from a Windows source checkout (for example `dist/` is present) but
+`native/windows/build/` is missing, or the loader/`rea doctor` reports a missing
+or mismatched native artifact (for example `Missing packaged Windows native file ...`
+or `Windows native artifact belongs to another REA version`), restore the
+packaged files before using Windows-native-controlled features.
+
+To restore without the MinGW build lane, extract the two files from the
+published `rea-agents` tarball whose version exactly matches the checkout's
+`package.json` version. Do not use `latest` or copy files from another REA
+version; the loader verifies the manifest version, ABI, architecture, and addon
+digest before it grants authority.
 
 From the checkout root, replace `<matching-version>` with the `version` in
 `package.json`:
@@ -46,8 +52,15 @@ cp package/native/windows/build/manifest.json native/windows/build/
 cp package/native/windows/build/rea-windows-x64.node native/windows/build/
 ```
 
+After restoring, optionally verify the artifact:
+
+```sh
+npm run verify:windows-native:artifact
+```
+
 This is a manual recovery step. REA does not fetch or install the artifact
-automatically. Alternatively, build it using the Linux/MinGW lane above.
+automatically, and restoring these files does not require rebuilding the runtime.
+Alternatively, build the artifact using the Linux/MinGW lane above.
 
 ## Boundaries
 

@@ -631,6 +631,16 @@ npm ci
 npm run build:cached
 ```
 
+On Windows source checkouts, building the runtime does not create the packaged
+Windows native controls in `native/windows/build/`. If a Windows-native-controlled
+workflow (such as Ghidra/JADX-backed provider operations or `run-exclusive`)
+reports a missing or mismatched native artifact (for example
+`Windows native artifact belongs to another REA version`), restore the two files
+from the matching `rea-agents@<package.json version>` npm tarball or build them
+as described in
+[Restore the artifact in a source checkout](https://github.com/morluto/rea/blob/main/native/windows/README.md#restore-the-artifact-in-a-source-checkout)
+and [Windows source checkouts](https://github.com/morluto/rea/blob/main/CONTRIBUTING.md#windows-source-checkouts).
+
 Then run `npm link` once in the checkout to put its `rea` on your `PATH`, or,
 wherever these docs say `rea …`, run
 `node /absolute/path/to/rea/scripts/rea.mjs …`. Setup run this way registers
