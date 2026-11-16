@@ -302,12 +302,25 @@ Windows workflows and tests that require native controls need these artifacts;
 this includes `run-exclusive` commands, which use the native Job Object to keep
 the artifact lock until every command descendant has exited. Without the
 artifacts, those controls are unavailable even after a successful runtime
-build.
+build. A Windows source checkout can have `dist/` compiled while
+`native/windows/build/` is still missing or contains files from a different REA
+version, which can surface as missing-file errors or
+`Windows native artifact belongs to another REA version`.
 
-Follow the [Windows native build guide](native/windows/README.md#build) before
-running those workflows from source. The artifact build requires Linux,
-MinGW-w64, and `tar`; the build script does not run on Windows. See that guide
-for the build and artifact-verification commands and the separate real Windows
+**Restore (A1, no Linux/MinGW toolchain required):** when the checkout's
+`package.json` version matches a published `rea-agents` release, extract the two
+files from that same version's npm tarball
+(`npm pack rea-agents@<matching-version>`, where `<matching-version>` is the
+checkout `package.json` version). Do not use `latest` or copy files from another
+REA version. See
+[Restore the artifact in a source checkout](native/windows/README.md#restore-the-artifact-in-a-source-checkout)
+for commands and caveats. This restores packaged native control files only and
+does not require rebuilding `dist/`.
+
+**Build from source:** if you have the toolchain, follow the
+[Windows native build guide](native/windows/README.md#build). The artifact build
+requires Linux, MinGW-w64, and `tar`; the build script does not run on Windows.
+See that guide for build/artifact-verification commands and separate real Windows
 verification prerequisites. Keep the generated addon and manifest uncommitted.
 
 The general source suite (`npm run test:fast`, `npm run test:changed`, and
