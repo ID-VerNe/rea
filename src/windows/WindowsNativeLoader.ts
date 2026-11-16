@@ -89,7 +89,7 @@ export interface WindowsNativeLoadHost {
 }
 
 const missingWindowsNativeFileReason = (file: string): string =>
-  `Missing packaged Windows native file native/windows/build/${file} (ENOENT). Restore both native/windows/build/manifest.json and native/windows/build/rea-windows-x64.node from the rea-agents@${PACKAGE_METADATA.version} tarball or build them with native/windows/README.md; no native artifact was loaded.`;
+  `Missing packaged Windows native file native/windows/build/${file} (ENOENT). Restore both native/windows/build/manifest.json and native/windows/build/rea-windows-x64.node from the rea-agents@${PACKAGE_METADATA.version} tarball or build them with native/windows/README.md; no native artifact was loaded. For source checkouts, restore matching files from \`npm pack rea-agents@${PACKAGE_METADATA.version}\` (copy \`package/native/windows/build/manifest.json\` and \`package/native/windows/build/rea-windows-x64.node\` into \`native/windows/build/\`); do not use latest or files from another REA version. See native/windows/README.md#restore-the-artifact-in-a-source-checkout.`;
 
 /** Recovery when Windows refuses to load the verified artifact, for example by code-integrity policy. */
 export const WINDOWS_NATIVE_LOAD_REFUSED_REMEDIATION =
@@ -109,7 +109,9 @@ export const windowsNativeFailureRemediation = (
     : failureStage === "load"
       ? WINDOWS_NATIVE_LOAD_REFUSED_REMEDIATION
       : failureStage === "artifact"
-        ? "Use the matching Windows x64 REA package, or restore native/windows/build/manifest.json and native/windows/build/rea-windows-x64.node from the same-version rea-agents tarball or build them with native/windows/README.md. The loader checks version, ABI, architecture, and digest before granting authority; no download or install is performed automatically."
+        ? "Use the matching Windows x64 REA package, or restore native/windows/build/manifest.json and native/windows/build/rea-windows-x64.node from the same-version rea-agents tarball or build them with native/windows/README.md. The loader checks version, ABI, architecture, and digest before granting authority; no download or install is performed automatically. In source checkouts, run `npm pack rea-agents@" +
+          PACKAGE_METADATA.version +
+          "` and restore the matching files from `package/native/windows/build/` into `native/windows/build/` (see native/windows/README.md#restore-the-artifact-in-a-source-checkout); never use latest or cross-version artifacts."
         : failureStage === "inspection"
           ? "Install the matching Windows x64 REA package; its native inspection must prove every required security control."
           : "Inspect the preserved native self-test error. Check that the process has a writable local NTFS/ReFS temporary directory and that its filesystem, DACL, Job Object, and cleanup operations are permitted. Resolve the reported constraint, then rerun rea doctor; reinstalling Ghidra or Java cannot fix this self-test.";
